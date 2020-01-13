@@ -81,10 +81,10 @@ class Session extends Main
     public static function read($id)
     {
         $Row = MySQL::query("SELECT `Data` FROM `cb_sessions` WHERE `SessionID` = '$id'", TRUE);
+        return $Row['Data'] ?? ''; # Introduced in PHP 7 : https://stackoverflow.com/a/59687793/126833
         
         # http://php.net/manual/en/function.session-start.php#120589
-        //check to see if $session_data is null before returning (CRITICAL)                
-        return $Row['Data'] ?? ''; # Introduced in PHP 7 : https://stackoverflow.com/a/59687793/126833
+        //check to see if $session_data is null before returning (CRITICAL)                        
         /*
         if($Row['Data'] == false || is_null($Row['Data']))
         {
