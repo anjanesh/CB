@@ -83,6 +83,14 @@ abstract class Form
 
         protected function checkPOST()
         {
+            /*
+            echo "array_keys(\$_POST) = "; print_r(array_keys($_POST)); echo "<br>";
+            echo "\$this->exp_POST = "; print_r($this->exp_POST); echo "<br>";
+            print_r(array_diff($this->exp_POST, array_keys($_POST)));
+            die();
+            */
+            
+            
             # POSTed
             if (count(array_diff($this->exp_POST, array_keys($_POST))) == 0) # If name=somearray[] and nothing is selected, somearray doesn't get sent in $_POST
              return TRUE;

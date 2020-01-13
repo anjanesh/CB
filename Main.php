@@ -120,10 +120,12 @@ abstract class Main
     public static function log($str, $Filename = self::DEBUG_FILENAME)
     {
         $debug = debug_backtrace();
-
+        
+        /*
         $fh = fopen($Filename, "a");
         fwrite($fh, @date("d-m-Y H:i:s")."\n$str\n\ndebug_backtrace() = ".print_r($debug, TRUE).str_repeat("=", 100)."\n");
         fclose($fh);
+        */
     }
 }
 ?>

@@ -61,6 +61,8 @@ class MySQL
     private static $username = FALSE;   # MySQL Username
     private static $password = FALSE;   # MySQL Password
     private static $database = FALSE;   # MySQL Database name
+    private static $port     = FALSE;   # MySQL Port
+    private static $sock     = FALSE;   # MySQL Sock
     private static $dblink   = NULL;    # MySQL connection
     private static $ThreadId;           # MySQL link's threadId - used to track down in which thread the query was executed
     private static $bConnected = FALSE; # If connected, this will set to TRUE
@@ -124,7 +126,7 @@ class MySQL
     }
 
     private function set_SQL($sql)
-    {
+    {        
         if (!is_string($sql)) throw new Main_Ex(Main_Ex::E_BAD_DATATYPE, "\$sql must of string type");
         if ($this->res) $this->res->free();
 
@@ -164,12 +166,14 @@ class MySQL
     /* Static Methods
     ----------------------------------------------------------------------------------------------------------------------------------- */
     
-    public static function init($h, $u, $p, $d)
+    public static function init($h, $u, $p, $d, $port = 3306, $sock = NULL)
     {
         self::$hostname = $h;
         self::$username = $u;
         self::$password = $p;
         self::$database = $d;
+        self::$port     = $port;
+        self::$sock     = isset($sock) ? $sock : ini_get("mysqli.default_socket");
     }    
     
     /*
@@ -188,7 +192,7 @@ class MySQL
         # database name is mandatory
         if (self::$database == '') throw new MySQL_Ex(MySQL_Ex::E_EMPTY_VALUE, 'No database to connect to !');
         
-        self::$dblink = new \mysqli(self::$hostname, self::$username, self::$password, self::$database);
+        self::$dblink = new \mysqli(self::$hostname, self::$username, self::$password, self::$database, self::$port, self::$sock);
 
         if (self::$dblink->connect_error)
         {
@@ -209,20 +213,21 @@ class MySQL
     public static function query($sql, $returnRow = FALSE)
     {
         if (self::$dblink == NULL) # Connection not yet initialized or already closed
-         throw new MySQL_Ex(MySQL_Ex::E_NO_CONNECTION);
-        
+         throw new MySQL_Ex(MySQL_Ex::E_NO_CONNECTION);   
+         
         $res = self::$dblink->query($sql);
         
         if (!$res)
         {
-            Main::log("SQL Statement : $sql\nmysql_error() = ".mysql_error());
+            Main::log("SQL Statement : $sql\nmysql_error() = ".self::$dblink->error);            
+            echo $sql;
             throw new MySQL_Ex(MySQL_Ex::E_BAD_SQL);
         }
         
         if ($returnRow)
         {
             if ($res->num_rows == 0) { $res->free(); return FALSE; } # No Rows ? Return FALSE
-            $row = $res->fetch_assoc();            
+            $row = $res->fetch_assoc();
             $res->free();
             return $row;
         }

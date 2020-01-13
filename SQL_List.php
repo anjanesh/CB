@@ -130,11 +130,11 @@ class SQL_List # throws SQL_List_Ex
     
     // For ones not impementing $data as CB\MySQL
     public function getSQL($num)
-    {
+    {        
         $SQL = "SELECT ".$this->SELECT." FROM ".$this->FROM." WHERE ".$this->WHERE; # echo $SQL."\n";
-        $this->Pg->set($num);
-        $SQL .= $this->Pg->getSQL_ORDER_BY_LIMIT();
-        return $SQL;        
+        $this->Pg->set($num);        
+        $SQL .= $this->Pg->getSQL_ORDER_BY_LIMIT(); 
+        return $SQL;
     }
     
     // This should be called after $WHERE is built, and before calling next()

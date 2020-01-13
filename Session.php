@@ -4,7 +4,7 @@ namespace CB;
 /*
 Session class
 Author : Anjanesh Lekshminarayanan
-Modified : 11/12/2014
+Modified : 19/03/2019
 */
 class Session extends Main
 {
@@ -20,26 +20,26 @@ class Session extends Main
         {
             self::$bStarted = TRUE;
             self::load();
-        }
+        }        
         
         if (!$UserID) self::$UserID = self::getUser();
     }
     
     private static function load()
     {
-        session_module_name("user");
-        session_set_save_handler(['Session', 'open'],
-                                 ['Session', 'close'],
-                                 ['Session', 'read'],
-                                 ['Session', 'write'],
-                                 ['Session', 'remove'],
-                                 ['Session', 'gc']
+        # session_module_name("user");
+        session_set_save_handler(['\CB\Session', 'open'],
+                                 ['\CB\Session', 'close'],
+                                 ['\CB\Session', 'read'],
+                                 ['\CB\Session', 'write'],
+                                 ['\CB\Session', 'remove'],
+                                 ['\CB\Session', 'gc']
                                  );
-        session_start();                                
+        session_start();
     }
     
     public static function IsLoggedIn()
-    {
+    {       
         if (self::$UserID > 0)
          return TRUE;
         else
@@ -53,7 +53,7 @@ class Session extends Main
     
     private static function getUser()
     {
-        $Row = MySQL::query("SELECT * FROM `cb_sessions` WHERE `SessionID` = '".session_id()."'", TRUE);
+        $Row = MySQL::query("SELECT * FROM `cb_sessions` WHERE `SessionID` = '".session_id()."'", TRUE);        
         
         if ($Row === FALSE)
         {
@@ -81,11 +81,26 @@ class Session extends Main
     public static function read($id)
     {
         $Row = MySQL::query("SELECT `Data` FROM `cb_sessions` WHERE `SessionID` = '$id'", TRUE);
-        return $Row['Data'];
+        
+        # http://php.net/manual/en/function.session-start.php#120589
+        //check to see if $session_data is null before returning (CRITICAL)                
+        return $Row['Data'] ?? ''; # Introduced in PHP 7 : https://stackoverflow.com/a/59687793/126833
+        /*
+        if($Row['Data'] == false || is_null($Row['Data']))
+        {
+			$session_data = '';
+		}
+		else
+		{
+			$session_data = $Row['Data'];
+		}
+		
+        return $session_data;
+        */
     }
     
     public static function write($id, $data)
-    {
+    { 
         if (self::$UserID === FALSE) return;
         $data = addslashes($data);
         $sql = "INSERT INTO `cb_sessions` VALUES ('$id', NOW(), '".self::$UserID."', '$data') ON DUPLICATE KEY UPDATE `UserID` = '".self::$UserID."', `Data` = '$data'";

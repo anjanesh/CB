@@ -98,19 +98,21 @@ class Pagination
         if (isset($PageNo)) self::__set("PageNo", $PageNo);
         if (isset($Rows)) self::setRows($Rows, isset($MaxRows) ? $MaxRows : NULL);
         if (isset($MaxPages)) self::__set("MaxPages", $MaxPages);
+        # echo "<br>".$this->TotalRows;echo "<br>".$this->Rows;echo "<br>".$this->MaxRows;
         self::calc();
     }
 
     /*
     Set the number of rows per page
     Parameters
-        n   : number of row
+        n   : number of rows
         [m] : Max number of rows
               Setting MaxRows alone is useless, since by then Rows could be out-of-limit
     */
     public function setRows($n, $m = NULL)
-    {
-        if (isset($m)) $this->MaxRows = self::__fallBackValue($m, 100, "integer", 1, 10000);
+    {        
+        # if (isset($m)) $this->MaxRows = self::__fallBackValue($m, 100, "integer", 1, 10000);
+        if (isset($m)) $this->MaxRows = $m;
         $this->Rows = $n > $this->MaxRows ? $this->MaxRows : $n;
     }
     
@@ -230,10 +232,10 @@ class Pagination
         // $IMG_Prev  = '<img alt="&lt;" src="'.CB_ICO.'prev.gif" style="border:0"/>';
         // $IMG_Next  = '<img alt="&gt;" src="'.CB_ICO.'next.gif" style="border:0"/>';
         
-        $html_prev = '&#8882;';
-        $html_next = '&#8883;';
-        $html_first = '&#8678;'; # 8676 8678
-        $html_last = '&#8680;'; # 8677 8680
+        $html_prev = '&#9667;'; # 8882
+        $html_next = '&#9657;'; # 8883
+        $html_first = '&#8676;'; # 8676 8678
+        $html_last = '&#8677;'; # 8677 8680
         
         $html = '';
         

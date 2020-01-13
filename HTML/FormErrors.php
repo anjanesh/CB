@@ -134,7 +134,7 @@ class FormErrors
                 return FALSE;
          }
 
-        public function ShowErrorMsgs($CSSclassName = NULL, $ErrorHeading = 'The following errors have occurred :')
+        public function ShowErrorMsgs($CSSclassName = NULL, $ErrorHeading = 'The following errors have occurred:')
         {
                $html  = '';
                if ($this->count == 0) return '';
@@ -177,7 +177,8 @@ class FormErrors
 
                foreach($this->_occurred as $i => $occurred)
                 if ($occurred)
-                 $html .= "<li>".htmlentities($this->_msg[$i], ENT_QUOTES)."</li>";
+                 # $html .= "<li>".htmlentities($this->_msg[$i], ENT_QUOTES)."</li>";
+                  $html .= "<li>".$this->_msg[$i]."</li>";
 
                $html .= '</ol>';
                $html .= '</div>';
