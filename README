@@ -1,4 +1,4 @@
-CB: A PHP 5.3 Framework
+CB: A PHP 5.3 Framework now migrated to use PHP 7 features like null coalescing operator
 
 Origin of Name
 ==============
