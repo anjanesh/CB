@@ -219,9 +219,9 @@ class MySQL
         
         if (!$res)
         {
-            Main::log("SQL Statement : $sql\nmysql_error() = ".self::$dblink->error);            
+            Main::log("SQL Statement : $sql\nmysql_error() = ".self::$dblink->error);
             echo $sql;
-            throw new MySQL_Ex(MySQL_Ex::E_BAD_SQL);
+            throw new MySQL_Ex(MySQL_Ex::E_BAD_SQL, self::$dblink->error);
         }
         
         if ($returnRow)
