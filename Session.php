@@ -105,17 +105,41 @@ class Session extends Main
         $data = addslashes($data);
         $sql = "INSERT INTO `cb_sessions` VALUES ('$id', NOW(), '".self::$UserID."', '$data') ON DUPLICATE KEY UPDATE `UserID` = '".self::$UserID."', `Data` = '$data'";
         $res = MySQL::query($sql);
+        
+        if (isset($_POST['remember_me']))
+            self::_setcookie(CB_SESSION_NAME, $id, time() + (86400 * 30)); # 30 days
+
         return TRUE;
     }
     
     public static function remove($id)
     {
         MySQL::query("DELETE FROM `cb_sessions` WHERE `SessionID` = '$id'");
+        self::_setcookie(CB_SESSION_NAME, $id, -1);
     }
     
     public static function gc()
     {
         return TRUE;
     }
+
+    /** Cookies are a pain to set up as they also rely on headers not being sent.
+     *  This method makes setting cookies easy with three params.
+     * @param string $key the name of the cookie
+     * @param mixed $value
+     * @param int $time the expiration time of our cookie
+     */
+    public static function _setCookie(string $key, $value = NULL, int $time = 604800) // Week?
+    {
+        if (headers_sent())
+        {
+            $_SESSION['Cookies'][] = [$key => [$value, $time]];
+        }
+        else
+        {            
+            setcookie($key, $value, time() + $time, '/', $_SERVER['HTTP_HOST'], FALSE, TRUE);        
+        }
+    }    
+
 }
 ?>
