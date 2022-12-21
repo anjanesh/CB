@@ -27,9 +27,9 @@ class MetaTag
     public function __toString()
     {
         $html = '';
-
         $a = $this->tag->getArray();
-        while (list($name, $content) = each($a))
+        
+        foreach($a as $name => $content)
         {
             $name = str_replace("'", '&#39;', $name);
             $content = str_replace("'", '&#39;', $content);
