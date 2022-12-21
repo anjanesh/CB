@@ -32,7 +32,7 @@ class Session extends Main
                                  ['\CB\Session', 'close'],
                                  ['\CB\Session', 'read'],
                                  ['\CB\Session', 'write'],
-                                 ['\CB\Session', 'remove'],
+                                 ['\CB\Session', 'remove'],                                 
                                  ['\CB\Session', 'gc']
                                  );
         session_start();
@@ -114,8 +114,16 @@ class Session extends Main
     
     public static function remove($id)
     {
-        MySQL::query("DELETE FROM `cb_sessions` WHERE `SessionID` = '$id'");
-        self::_setcookie(CB_SESSION_NAME, $id, -1);
+        try
+        {
+            MySQL::query("DELETE FROM `cb_sessions` WHERE `SessionID` = '$id'");
+            self::_setcookie(CB_SESSION_NAME, $id, -1);
+            return true;
+        }
+        catch(Exception $e)
+        {
+            return false;
+        }
     }
     
     public static function gc()
